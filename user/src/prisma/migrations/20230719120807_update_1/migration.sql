@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "followers" DROP NOT NULL,
+ALTER COLUMN "following" DROP NOT NULL;
