@@ -1,18 +1,22 @@
 import { PrismaClient, Prisma } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import asyncWrapper from '../Middlewares/async-wrapper'
+import { hashPassword } from '../../util/passwordManager';
 
 const prisma = new PrismaClient()
 const User = prisma.user;
 
-export const createUser = asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+export const signup = asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
 
     const {
         username,
         email,
         firstName,
         lastName,
+        password
     } = req.body;
+
+    const hashedPassword = await hashPassword(password);
 
 
     try {
@@ -22,14 +26,13 @@ export const createUser = asyncWrapper(async (req: Request, res: Response, next:
                 email,
                 firstName,
                 lastName,
+                password: hashedPassword
             }
         });
 
         // to convert BigInt to String
         const responseData = {
-            ...newUser,
-            followers: Number(newUser.followers),
-            following: Number(newUser.following)
+            ...newUser
         };
 
         res.status(201).json({
@@ -56,14 +59,14 @@ export const getUser = asyncWrapper(async (req: Request, res: Response, next: Ne
 
     const user = await User
         .findMany({
-            // where: { id: id },
+            where: { id: id },
             select: {
                 id: true,
                 username: true,
                 firstName: true,
                 lastName: true,
-                // followers: true,
-                // following: true
+                followers: true,
+                following: true
             }
         })
 
@@ -144,7 +147,7 @@ export const deleteUser = asyncWrapper(async (req: Request, res: Response, next:
     try {
         // Delete the user with the given id
         await User.deleteMany({
-            // where: { id: id }
+            where: { id: id }
         });
 
         // Return a success message in the response
