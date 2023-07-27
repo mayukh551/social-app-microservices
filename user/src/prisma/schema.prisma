@@ -10,16 +10,18 @@ datasource db {
 //* User Table Schema
 //TODO: Change BigInt to Int, as Int is enough to store large follow numbers.
 model User {
-  id        String  @id @default(uuid())
-  username  String  @unique @db.VarChar(50)
-  firstName String  @db.VarChar(50)
-  lastName  String  @db.VarChar(50)
-  gender    GENDER?
-  email     String
-  phoneNo   Int?
-  followers BigInt? @default(0)
-  following BigInt? @default(0)
-  Post      Post[]
+  id         String  @id @default(uuid())
+  username   String  @unique @db.VarChar(50)
+  firstName  String  @db.VarChar(50)
+  lastName   String  @db.VarChar(50)
+  password   String  @default("") @db.VarChar(150)
+  profilePic String? @default("")
+  gender     GENDER?
+  email      String
+  phoneNo    Int?
+  followers  Int?    @default(0)
+  following  Int?    @default(0)
+  Post       Post[]
 }
 
 //* Post Table Schema

@@ -1,6 +1,12 @@
 import CustomError from "./CustomError";
 import statusCodes from "../../config/statusCodes";
 
+/**
+ * @class AppError
+ * @param {number | string} statusCode
+ * @param {string} message
+ * @param {any} err
+ */
 export default class AppError extends CustomError {
 
     statusCode: number | string;
