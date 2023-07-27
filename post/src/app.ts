@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 
 // import routes
-
+import postRouter from './Routes/post';
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 // routes
-
+app.use('/api/post', postRouter);
 
 // middlewares
 
