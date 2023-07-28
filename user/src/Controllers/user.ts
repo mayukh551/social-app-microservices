@@ -2,6 +2,8 @@ import { PrismaClient, Prisma } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import asyncWrapper from '../Middlewares/async-wrapper'
 import UserError from '../Errors/UserError';
+import AppError from '../Errors/AppError';
+import catchHanlder from '../../util/catchHanlder';
 
 const prisma = new PrismaClient();
 const User = prisma.user;
@@ -45,7 +47,7 @@ export const getUser = asyncWrapper(async (req: Request, res: Response, next: Ne
         }
     }
     catch (err) {
-        throw new UserError(500, "Internal Server Error", err);
+        catchHanlder(err, UserError, next);
     }
 
 });
@@ -99,7 +101,7 @@ export const updateUser = asyncWrapper(async (req: Request, res: Response, next:
         }
     }
     catch (err) {
-        throw new UserError(500, "Internal Server Error", err);
+        catchHanlder(err, UserError, next);
     }
 });
 
@@ -130,6 +132,6 @@ export const deleteUser = asyncWrapper(async (req: Request, res: Response, next:
         });
     }
     catch (err) {
-        throw new UserError(500, "Internal Server Error", err);
+        catchHanlder(err, UserError, next);
     }
 });
