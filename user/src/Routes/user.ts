@@ -8,6 +8,7 @@ import { signup } from '../Controllers/auth';
 const router = express.Router();
 
 //* Routes
+router.route('/').get((req, res) => res.send("User Server is Live"));
 
 // get a user
 router.route('/:id').get(getUser);

@@ -6,6 +6,8 @@ import errorHandler from './Middlewares/error-handler';
 
 const app = express();
 
+app.set('trust proxy', true);
+
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {

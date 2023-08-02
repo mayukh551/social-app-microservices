@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/ts-node-dev src/index.ts",
+    "start": "ts-node-dev src/index.ts",
     "test": ""
   },
   "keywords": [],

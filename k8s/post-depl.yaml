@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: post-depl
+  namespace: social-app
 spec:
   replicas: 1
   selector:
@@ -14,18 +15,19 @@ spec:
     spec:
       containers:
         - name: post
-          image: mayukh551/post
+          image: mayukh551/post:latest
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: post-srv
+  namespace: social-app
 spec:
   selector:
     app: post
   ports:
     - name: post
       protocol: TCP
-      port: 5001
-      targetPort: 5001
+      port: 5002
+      targetPort: 5002
