@@ -3,11 +3,9 @@
 # enter src folder
 cd src/
 
-# update prisma schema with db schema
-npx prisma migrate deploy
+npx prisma db pull
 
-# generate prisma client
-npx prisma generate
+npx prisma db push
 
 # exit src folder
 cd .. 
