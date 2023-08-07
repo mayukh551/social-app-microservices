@@ -46,7 +46,7 @@ export default class AppError extends CustomError {
     }
 
     toString() {
-        return `${this.name} => ${this.statusCode}] ${this.message} | ${this.timeStamp}`;
+        return `${this.name} => ${this.statusCode} ${this.message} | ${this.timeStamp}`;
     }
 
     serializeError(err: any): { message: string; field?: string | undefined; }[] {

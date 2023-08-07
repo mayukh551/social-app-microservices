@@ -8,6 +8,8 @@ const router = express.Router();
 
 //* Routes
 
+router.route('/').get((req, res) => res.send('Post Server is Live'));
+
 // get a post
 router.route('/:id').get(getPost);
 

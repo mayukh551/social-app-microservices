@@ -19,6 +19,8 @@ export const createPost = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const { video_url, img_url, caption, userId } = req.body;
 
+    console.log(req.body);
+
     try {
       const newPost = await Post.create({
         data: {
@@ -28,6 +30,8 @@ export const createPost = asyncWrapper(
           userId,
         },
       });
+
+      console.log(newPost);
 
       const responseData = {
         ...newPost,
