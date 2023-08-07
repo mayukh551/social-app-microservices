@@ -29,7 +29,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     const apiEndpoint = req.method + ' ' + req.originalUrl;
 
     // const node_env: string = process.env.NODE_ENV as string;
-    const node_env: string = "devlopment";
+    const node_env: string = "development";
 
     // check the environment and send the response accordingly
     if (["test", "development"].includes(node_env)) {
