@@ -2,7 +2,7 @@ import express from 'express';
 
 // import controllers
 import { deleteUser, getUser, updateUser } from '../Controllers/user';
-import { signup } from '../Controllers/auth';
+import { signup, login } from '../Controllers/auth';
 
 // extract router from express
 const router = express.Router();
@@ -17,7 +17,7 @@ router.route('/:id').get(getUser);
 router.route('/signup').post(signup);
 
 // user login
-router.route('/login').post();
+router.route('/login').post(login);
 
 // update a user
 router.route('/edit/:id').put(updateUser);
