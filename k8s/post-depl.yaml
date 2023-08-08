@@ -16,6 +16,13 @@ spec:
       containers:
         - name: post
           image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post:latest
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "360Mi"
 
       #   - name: cloud-sql-proxy
       #     # It is recommended to use the latest version of the Cloud SQL Auth Proxy
