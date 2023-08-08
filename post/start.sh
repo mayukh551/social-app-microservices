@@ -3,9 +3,11 @@
 # enter src folder
 cd src/
 
-npx prisma db pull
+npx prisma generate
 
-npx prisma db push
+# npx prisma db pull
+
+# npx prisma db push
 
 # exit src folder
 cd .. 
