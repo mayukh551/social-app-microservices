@@ -56,6 +56,10 @@ export const signup = asyncWrapper(async (req: Request, res: Response, next: Nex
         });
 
         res.status(201).json({
+            data: {
+                user: newUser,
+                token: token
+            },
             message: "Profile created successfully"
         })
     }

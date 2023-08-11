@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# enter src folder
 cd src/
 
-npx prisma generate
+npx prisma db pull
 
-# npx prisma db pull
+npx prisma db push
 
-# npx prisma db push
+cd ..
 
-# exit src folder
-cd .. 
-
-# Start your application
 npm start
