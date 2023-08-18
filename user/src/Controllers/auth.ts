@@ -109,7 +109,8 @@ export const login = asyncWrapper(async (req: Request, res: Response, next: Next
         });
 
         res.status(200).json({
-            message: "Login Successful!"
+            message: "Login Successful!",
+            token
         })
     }
     catch (err) {
