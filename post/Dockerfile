@@ -6,11 +6,14 @@ COPY . .
 
 RUN npm install
 
-# Copy the start.sh into the container
-COPY start.sh .
+# Copy the setup.sh into the container
+COPY setup.sh .
+
+# Change the file format to unix: CRLF to LF
+RUN sed -i 's/\r$//' setup.sh
 
 # Make the shell script executable
-RUN chmod +x start.sh
+RUN chmod +x setup.sh
 
 # Execute the shell script
-CMD ["/bin/sh", "start.sh"]
+CMD ["/bin/sh", "setup.sh"]

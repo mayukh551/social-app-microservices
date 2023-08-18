@@ -22,7 +22,7 @@ export const getUser = asyncWrapper(async (req: Request, res: Response, next: Ne
     try {
         const user = await User
             .findMany({
-                where: { id: id },
+                // where: { id: id },
                 select: {
                     id: true,
                     username: true,

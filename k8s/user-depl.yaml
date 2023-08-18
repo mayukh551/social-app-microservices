@@ -16,38 +16,44 @@ spec:
       containers:
         - name: user
           image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-user-repo/user:latest
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+        - name: cloud-sql-proxy
+          # It is recommended to use the latest version of the Cloud SQL Auth Proxy
+          # Make sure to update on a regular schedule!
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.1.0
+          args:
+            - "--structured-logs"
+            - "--port=5432"
+            - "pro-tuner-391513:asia-south1:postgres-dev-1"
+            - "--credentials-file=/secrets/service_account.json"
 
-      #   - name: cloud-sql-proxy
-      #     # It is recommended to use the latest version of the Cloud SQL Auth Proxy
-      #     # Make sure to update on a regular schedule!
-      #     image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.1.0
-      #     args:
-      #       - "--structured-logs"
-      #       - "--port=5432"
-      #       - "pro-tuner-391513:asia-south1:postgres-dev-1"
-      #       - "--credentials-file=/secrets/service_account.json"
+          securityContext:
+            runAsNonRoot: true
+          volumeMounts:
+            - name: cloudsql-sa-volume
+              mountPath: /secrets/
+              readOnly: true
+          resources:
+            requests:
+              # The proxy's memory use scales linearly with the number of active
+              # connections. Fewer open connections will use less memory. Adjust
+              # this value based on your application's requirements.
+              memory: "768Mi"
+              # The proxy's CPU use scales linearly with the amount of IO between
+              # the database and the application. Adjust this value based on your
+              # application's requirements.
+              cpu: "500m"
 
-      #     securityContext:
-      #       runAsNonRoot: true
-      #     volumeMounts:
-      #       - name: cloudsql-sa-volume
-      #         mountPath: /secrets/
-      #         readOnly: true
-      #     resources:
-      #       requests:
-      #         # The proxy's memory use scales linearly with the number of active
-      #         # connections. Fewer open connections will use less memory. Adjust
-      #         # this value based on your application's requirements.
-      #         memory: "768Mi"
-      #         # The proxy's CPU use scales linearly with the amount of IO between
-      #         # the database and the application. Adjust this value based on your
-      #         # application's requirements.
-      #         cpu: "450m"
-
-      # volumes:
-      #   - name: cloudsql-sa-volume
-      #     secret:
-      #       secretName: cloudsql-sa
+      volumes:
+        - name: cloudsql-sa-volume
+          secret:
+            secretName: cloudsql-sa
 
 ---
 # Cluster IP service for user service

@@ -6,15 +6,15 @@ deploy:
     manifests:
       - ./k8s/ingress-service.yaml
       - ./k8s/user-depl.yaml
-      - ./k8s/post-depl.yaml
+      # - ./k8s/post-depl.yaml
 
 build:
-  # local:
-  #   push: false
-  googleCloudBuild:
-    projectId: pro-tuner-391513
+  local:
+    push: false
+  # googleCloudBuild:
+  #   projectId: pro-tuner-391513
   artifacts:
-    - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-user-repo/user
+    - image: mayukh551/user
       context: user
       docker:
         dockerfile: Dockerfile
@@ -23,11 +23,11 @@ build:
           - src: "src/**/*.ts"
             dest: .
 
-    - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post
-      context: post
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: "src/**/*.ts"
-            dest: .
+    # - image: mayukh551/post
+    #   context: post
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - src: "src/**/*.ts"
+    #         dest: .
