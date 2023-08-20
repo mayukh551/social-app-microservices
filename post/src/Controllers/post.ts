@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import asyncWrapper from "../Middlewares/async-wrapper";
 import PostError from "../Errors/PostError";
 import AppError from "../Errors/AppError";
+import { uploadImage } from "../../util/cloudStorageHelpers";
+import catchHanlder from "../../util/catchHanlder";
 
 const prisma = new PrismaClient();
 const Post = prisma.post;
@@ -17,14 +19,25 @@ const Post = prisma.post;
 
 export const createPost = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { video_url, img_url, caption, userId } = req.body;
 
-    console.log(req.body);
+    const { caption, userId } = req.body;
+
+    console.log(caption, userId);
+
+    // get image file from request
+    const myFile = req.file;
 
     try {
+
+      // check if image file exists
+      if (!myFile) throw new PostError(400, 'No Image/file was uploaded', null);
+
+      // upload image to Google Cloud Storage
+      const img_url = await uploadImage(myFile) as string;
+
+      // create new post
       const newPost = await Post.create({
         data: {
-          video_url,
           img_url,
           caption,
           userId,
@@ -41,8 +54,9 @@ export const createPost = asyncWrapper(
         data: responseData,
         message: "Post created successfully",
       });
+
     } catch (err) {
-        throw new PostError(500, "Internal Server Error.", err);
+      catchHanlder(err, PostError, next);
     }
   }
 );
@@ -76,7 +90,7 @@ export const getgetPostByUserIdPost = asyncWrapper(
       });
       // console.log(post)
       // if post exists
-      if (post.length>0) {
+      if (post.length > 0) {
         res.status(200).json({
           data: post,
           message: "Post found successfully",
@@ -89,12 +103,7 @@ export const getgetPostByUserIdPost = asyncWrapper(
         throw new PostError(500, "Post not found.", null);
       }
     } catch (err) {
-        if(err instanceof AppError)
-        {
-            next(err);
-        }
-        else
-            throw new PostError(500, "Internal Server Error.", err);
+      catchHanlder(err, PostError, next);
     }
   }
 );
@@ -126,9 +135,9 @@ export const getPost = asyncWrapper(
           updatedAt: true,
         },
       });
-    //   console.log(post)
+      //   console.log(post)
       // if post exists
-      if (post.length>0) {
+      if (post.length > 0) {
         res.status(200).json({
           data: post,
           message: "Post found successfully",
@@ -140,12 +149,7 @@ export const getPost = asyncWrapper(
         throw new PostError(400, "Post does not exist.", null);
       }
     } catch (err) {
-        if(err instanceof AppError)
-        {
-            next(err);
-        }
-        else
-            throw new PostError(500, "Internal Server Error.", err);
+      catchHanlder(err, PostError, next);
     }
   }
 );
@@ -220,22 +224,21 @@ export const deletePost = asyncWrapper(
       const post = await Post.deleteMany({
         where: { id: id },
       });
-    //   console.log(post)
-      if (post.count===0) 
-    // if(!post)
-      throw new PostError(400, "Post not found", null);
+      //   console.log(post)
+      if (post.count === 0)
+        // if(!post)
+        throw new PostError(400, "Post not found", null);
       // Return a success message in the response
-      
+
       res.status(200).json({
         message: "Post deleted successfully",
       });
     } catch (err) {
-        if(err instanceof AppError)
-        {
-            next(err);
-        }
-        else
-            throw new PostError(500, "Internal Server Error.", err);
+      if (err instanceof AppError) {
+        next(err);
+      }
+      else
+        throw new PostError(500, "Internal Server Error.", err);
     }
   }
 );

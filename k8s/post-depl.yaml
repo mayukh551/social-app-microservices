@@ -16,6 +16,7 @@ spec:
       containers:
         - name: post
           image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post:latest
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: "500m"
