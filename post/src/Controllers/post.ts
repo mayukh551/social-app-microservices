@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncWrapper from "../Middlewares/async-wrapper";
 import PostError from "../Errors/PostError";
 import AppError from "../Errors/AppError";
-import { uploadImage } from "../../util/cloudStorageHelpers";
+import { deleteImage, uploadImage } from "../../util/cloudStorageHelpers";
 import catchHanlder from "../../util/catchHanlder";
 
 const prisma = new PrismaClient();
@@ -166,17 +166,38 @@ export const updatePost = asyncWrapper(
     // Get the post's id from the request parameters
     const { id } = req.params;
     // Get the new values for the post's video_url,img_url,caption,userId from the request body
-    const { video_url, img_url, caption, userId } = req.body;
+    const { caption, userId } = req.body;
+    const newFile = req.file;
 
     try {
+
+      //* Get old img_url, delete it, and upload new one
+
+      const post = await Post.findUnique({ where: { id: id } });
+
+      if (!post) throw new PostError(400, "Post not found", null);
+
+      // get image url from post
+      const old_img_url = post.img_url;
+      /**
+       * the split() method splits the string into an array of substrings based on '/'
+       * then pop() method used to get the last element of the array
+       * which will be the filename.
+       */
+      const fileName = old_img_url!.split("/").pop() as string;
+
+      // delete image from Google Cloud Storage
+      await deleteImage(fileName);
+
+      const new_img_url = await uploadImage(newFile) as string;
+
       // Update the user with the given id using Prisma's update method
       const updatedPost = await Post.update({
-        where: { id: id },
+        where: { id: id, userId: userId },
         data: {
-          video_url,
-          img_url,
           caption,
           userId,
+          img_url: new_img_url,
         },
         select: {
           id: true,
@@ -221,18 +242,30 @@ export const deletePost = asyncWrapper(
 
     try {
       // Delete the post with the given id
-      const post = await Post.deleteMany({
+      const post = await Post.delete({
         where: { id: id },
       });
-      //   console.log(post)
-      if (post.count === 0)
-        // if(!post)
-        throw new PostError(400, "Post not found", null);
-      // Return a success message in the response
 
+      if (!post)
+        throw new PostError(400, "Post not found", null);
+
+      // get image url from post
+      const img_url = post.img_url;
+      /**
+       * the split() method splits the string into an array of substrings based on '/'
+       * then pop() method used to get the last element of the array
+       * which will be the filename.
+       */
+      const fileName = img_url!.split("/").pop() as string;
+
+      // delete image from Google Cloud Storage
+      await deleteImage(fileName);
+
+      // Return a success message in the response
       res.status(200).json({
         message: "Post deleted successfully",
       });
+
     } catch (err) {
       if (err instanceof AppError) {
         next(err);

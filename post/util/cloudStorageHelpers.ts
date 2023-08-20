@@ -70,3 +70,20 @@ export const multipleImagesUpload = async (myFiles: File[]): Promise<string[]> =
 
     return imageUrls;
 }
+
+
+//******************************************************************************
+//* DELETE IMAGES FROM GOOGLE CLOUD STORAGE
+
+export const deleteImage = (fileName: string) => new Promise((resolve, reject) => {
+
+    const file = bucket.file(fileName);
+
+    file.delete()
+        .then(() => {
+            resolve(true);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+});
