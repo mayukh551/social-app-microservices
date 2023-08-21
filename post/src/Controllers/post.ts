@@ -1,8 +1,7 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import asyncWrapper from "../Middlewares/async-wrapper";
 import PostError from "../Errors/PostError";
-import AppError from "../Errors/AppError";
 import { deleteImage, uploadImage } from "../../util/cloudStorageHelpers";
 import catchHanlder from "../../util/catchHanlder";
 
@@ -163,15 +162,25 @@ export const getPost = asyncWrapper(
  */
 export const updatePost = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
+
     // Get the post's id from the request parameters
     const { id } = req.params;
+
     // Get the new values for the post's video_url,img_url,caption,userId from the request body
     const { caption, userId } = req.body;
+
+    // get image file from request
     const newFile = req.file;
+
+    if (!newFile) throw new PostError(400, 'No Updated Image/file was uploaded', null);
 
     try {
 
-      //* Get old img_url, delete it, and upload new one
+      /**  
+       * Get old img_url,
+       * delete it, and
+       * upload new one
+       */
 
       const post = await Post.findUnique({ where: { id: id } });
 
@@ -219,12 +228,16 @@ export const updatePost = asyncWrapper(
           data: updatedPost,
           message: "Post updated successfully",
         });
-      } else {
-        // If the user was not updated successfully, throw an error
+
+      }
+
+      // If the user was not updated successfully, throw an error
+      else {
         throw new PostError(400, "Post does not exist.", null);
       }
-    } catch (err) {
-      throw new PostError(500, "Internal Server Error", err);
+    }
+    catch (err) {
+      catchHanlder(err, PostError, next);
     }
   }
 );
@@ -267,11 +280,7 @@ export const deletePost = asyncWrapper(
       });
 
     } catch (err) {
-      if (err instanceof AppError) {
-        next(err);
-      }
-      else
-        throw new PostError(500, "Internal Server Error.", err);
+      catchHanlder(err, PostError, next);
     }
   }
 );

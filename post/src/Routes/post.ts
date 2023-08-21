@@ -21,7 +21,7 @@ router.route('/byuser/:userId').get(getgetPostByUserIdPost);
 router.route('/create').post(upload.single('file'), createPost);
 
 // update a post
-router.route('/edit/:id').put(updatePost);
+router.route('/edit/:id').put(upload.single('file'), updatePost);
 
 // delete a post
 router.route('/delete/:id').delete(deletePost);
