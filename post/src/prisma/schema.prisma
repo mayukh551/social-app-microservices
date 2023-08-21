@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://social123:mysecretpassword@127.0.0.1:5432/dbtest1"
 }
 
 // Post Schema with userId as F.K
