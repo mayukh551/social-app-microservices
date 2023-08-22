@@ -68,7 +68,7 @@ export const createPost = asyncWrapper(
  * @param {NextFunction} next
  */
 
-export const getgetPostByUserIdPost = asyncWrapper(
+export const getPostByUserIdPost = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.params;
 
@@ -166,7 +166,7 @@ export const updatePost = asyncWrapper(
     // Get the post's id from the request parameters
     const { id } = req.params;
 
-    // Get the new values for the post's video_url,img_url,caption,userId from the request body
+    // Get the new values for the post's video_url, img_url, caption, userId from the request body
     const { caption, userId } = req.body;
 
     // get image file from request
