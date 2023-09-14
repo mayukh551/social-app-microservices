@@ -4,17 +4,18 @@ kind: Config
 deploy:
   kubectl:
     manifests:
-      - ./k8s/ingress-service.yaml
-      - ./k8s/user-depl.yaml
-      - ./k8s/post-depl.yaml
+      - ./k8s/dev/*
 
 build:
-  # local:
-  #   push: false
-  googleCloudBuild:
-    projectId: pro-tuner-391513
+  local:
+    push: false
+  # googleCloudBuild:
+  #   projectId: pro-tuner-391513
   artifacts:
-    - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-user-repo/user
+    # prod image name
+    # - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-user-repo/user
+    # dev image name
+    - image: mayukh551/user
       context: user
       docker:
         dockerfile: Dockerfile
@@ -23,7 +24,10 @@ build:
           - src: "src/**/*.ts"
             dest: .
 
-    - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post
+    # prod image name
+    # - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post
+    # dev image name
+    - image: mayukh551/post
       context: post
       docker:
         dockerfile: Dockerfile
