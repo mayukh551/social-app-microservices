@@ -16,7 +16,7 @@ spec:
       containers:
         - name: user
           image: mayukh551/user:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
 
 ---
 # Cluster IP service for user service

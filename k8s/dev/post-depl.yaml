@@ -16,7 +16,7 @@ spec:
       containers:
         - name: post
           image: mayukh551/post:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
 
 ---
 apiVersion: v1
