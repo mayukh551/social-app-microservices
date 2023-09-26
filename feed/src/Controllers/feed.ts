@@ -74,12 +74,12 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
         //* send these posts to the client
         const firstHalfPosts = result.slice(0, size);
 
+        res.status(200).json({ data: firstHalfPosts });
 
         //* cache these in the redis for next request
         const secondHalfPosts = result.slice(size);
         await redisClient.set(`post:${userId}`, JSON.stringify(secondHalfPosts));
         await redisClient.expire(`post:${userId}`, 60 * 60 * 5); // 5 hrs
-
 
         // If this is the first request, cache the count of posts
         const reqCount = await redisClient.get(`post:${userId}:count`);
@@ -90,9 +90,8 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
             await redisClient.set(`post:${userId}:count`, 1);
 
             //* send the first 20 and cache the rest
-            res.status(200).json({ data: firstHalfPosts })
+            // res.status(200).json({ data: firstHalfPosts })
         }
-        // res.status(200).json({ data: firstHalfPosts });
 
         else { // cache the response
 
