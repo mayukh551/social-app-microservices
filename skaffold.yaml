@@ -6,6 +6,7 @@ deploy:
     manifests:
       - ./k8s/dev/user-depl.yaml
       - ./k8s/dev/post-depl.yaml
+      - ./k8s/dev/feed-depl.yaml
 
 build:
   local:
@@ -13,6 +14,7 @@ build:
   # googleCloudBuild:
   #   projectId: pro-tuner-391513
   artifacts:
+    # //************************************ User Image Build ***********************************
     # prod image name
     # - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-user-repo/user
     # dev image name
@@ -25,11 +27,24 @@ build:
           - src: "src/**/*.ts"
             dest: .
 
+    # //************************************ Post Image Build ***********************************
+
     # prod image name
     # - image: asia-south1-docker.pkg.dev/pro-tuner-391513/social-app-post-repo/post
     # dev image name
     - image: mayukh551/post
       context: post
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+
+    # //************************************ Feed Image Build ******************************
+
+    - image: mayukh551/feed
+      context: feed
       docker:
         dockerfile: Dockerfile
       sync:

@@ -19,7 +19,7 @@ const Post = prisma.post;
 export const createPost = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
 
-    const { caption, userId } = req.body;
+    const { caption, userId, img_url } = req.body;
 
     console.log(caption, userId);
 
@@ -29,10 +29,10 @@ export const createPost = asyncWrapper(
     try {
 
       // check if image file exists
-      if (!myFile) throw new PostError(400, 'No Image/file was uploaded', null);
+      // if (!myFile) throw new PostError(400, 'No Image/file was uploaded', null);
 
       // upload image to Google Cloud Storage
-      const img_url = await uploadImage(myFile) as string;
+      // const img_url = await uploadImage(myFile) as string;
 
       // create new post
       const newPost = await Post.create({

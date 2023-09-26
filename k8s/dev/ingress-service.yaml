@@ -27,3 +27,11 @@ spec:
                 name: post-srv
                 port:
                   number: 5002
+
+          - path: /api/feed/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: feed-srv
+                port:
+                  number: 5003

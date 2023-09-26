@@ -7,36 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//* User Table Schema
+//****************************************** User Table Schema *************************************
 
 model User {
-  id         String  @id @default(uuid())
-  username   String  @unique @db.VarChar(50)
-  firstName  String  @db.VarChar(50)
-  lastName   String  @db.VarChar(50)
-  password   String  @default("") @db.VarChar(150)
-  profilePic String? @default("")
+  id         String   @id @default(uuid())
+  username   String   @unique @db.VarChar(50)
+  firstName  String   @db.VarChar(50)
+  lastName   String   @db.VarChar(50)
+  password   String   @default("") @db.VarChar(150)
+  profilePic String?  @default("")
   gender     GENDER?
   email      String
   phoneNo    Int?
-  followers  Int?    @default(0)
-  following  Int?    @default(0)
+  followers  Int?     @default(0)
+  following  Int?     @default(0)
   Post       Post[]
+  Follow     Follow[]
 }
 
-//* Post Table Schema
+//******************************************* Post Table Schema *************************************
+
 model Post {
-  id        String   @id @unique
+  id        String    @id @unique @default(uuid())
   video_url String?
   img_url   String?
-  caption   String?  @db.VarChar(10000)
-  likes     Int?     @default(0)
-  comments  Int?     @default(0)
-  shares    Int?     @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime
+  caption   String?   @db.VarChar(10000)
+  likes     Int?      @default(0)
+  comments  Int?      @default(0)
+  shares    Int?      @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
   userId    String
-  User      User     @relation(fields: [userId], references: [id])
+  User      User      @relation(fields: [userId], references: [id])
 }
 
 //* Datatype for gender roles
@@ -44,4 +46,15 @@ enum GENDER {
   MALE
   FEMALE
   CUSTOM
+}
+
+//****************************************** Follow Table Schema ***********************************
+
+model Follow {
+  id        String   @id @unique @default(uuid())
+  userId    String   @default("") @db.VarChar(50) // userId is the user who is following or being followed
+  follower  String?  @default("") @db.VarChar(50) // follower is the user who is following the userId
+  following String?  @default("") @db.VarChar(50) // following is the user who is being followed by the userId
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
 }

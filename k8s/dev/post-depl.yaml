@@ -17,6 +17,14 @@ spec:
         - name: post
           image: mayukh551/post:latest
           imagePullPolicy: IfNotPresent
+      #     volumeMounts:
+      #       - name: post-persistent-storage
+      #         mountPath: /var/lib/postgresql/data
+
+      # volumes:
+      #   - name: post-persistent-storage
+      #     persistentVolumeClaim:
+      #       claimName: pvc-postgres
 
 ---
 apiVersion: v1
