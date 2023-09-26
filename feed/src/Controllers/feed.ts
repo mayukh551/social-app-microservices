@@ -30,6 +30,9 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
     const { userId } = req.params;
 
+    // check if userID is defined
+    if (typeof userId !== 'string') throw new UserError(400, "User ID is required", null);
+
     // check if available in cache
     try {
 
@@ -48,6 +51,7 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
             select: { following: true },
             where: {
                 userId: userId,
+                following: { not: null },
             },
             take: 40,
         });
@@ -58,9 +62,12 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
         //* Get 1 or 2 posts for each following id
 
         for (const following of top40Followings) {
+
+            const followingId = following.following as string;
+
             const posts = await Post.findMany({
                 where: {
-                    userId: following.following,
+                    userId: followingId,
                 },
                 take: 1,
             });

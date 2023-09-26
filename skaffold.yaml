@@ -24,7 +24,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: "src/***/*.ts"
             dest: .
 
     # //************************************ Post Image Build ***********************************
@@ -38,7 +38,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: "src/***/*.ts"
             dest: .
 
     # //************************************ Feed Image Build ******************************
@@ -49,5 +49,5 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: "src/***/*.ts"
             dest: .
