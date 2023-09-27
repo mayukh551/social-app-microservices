@@ -9,7 +9,7 @@ import UserError from '../Errors/UserError';
 
 // Redis Client
 const redisClient = redis.createClient();
-redisClient.connect().then(() => console.log('Connected to Redis in cache-data file'));
+redisClient.connect().then(() => console.log('Connected to Redis'));
 
 // Prisma Client
 const prisma = new PrismaClient();
@@ -18,6 +18,17 @@ const prisma = new PrismaClient();
 const Follow = prisma.follow;
 const Post = prisma.post;
 const User = prisma.user;
+
+
+//* add these posts to feed table
+async function addPostsToFeed(userId: string, posts: any[]) {
+    await prisma.feed.createMany({
+        data: posts.map((post) => ({
+            userId: userId,
+            postId: post.id,
+        })),
+    });
+}
 
 /**
  * @function getFeedPosts
@@ -28,10 +39,12 @@ const User = prisma.user;
  */
 export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { userId } = req.params;
+    const { id: userId } = req.params;
 
     // check if userID is defined
-    if (typeof userId !== 'string') throw new UserError(400, "User ID is required", null);
+    if (!userId) {
+        throw new UserError(400, "User ID is required", null);
+    }
 
     // check if available in cache
     try {
@@ -40,7 +53,16 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
         if (cachedPosts) {
             redisClient.del(`post:${userId}`);
-            res.status(200).json({ data: JSON.parse(cachedPosts) });
+
+            const nextPosts = JSON.parse(cachedPosts);
+
+            console.log('Cached madafaqa');
+
+            res.status(200).json({ data: nextPosts });
+
+            // add these posts to feed table
+            addPostsToFeed(userId, nextPosts);
+            return;
         }
 
 
@@ -58,6 +80,23 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
         const result: any[] = [];
 
+        //* Get the posts from Feed Table that have already been sent to the client
+        var sentPosts = await prisma.feed.findMany({
+            select: { id: true, postId: true },
+            where: {
+                userId: userId,
+            },
+        }) as any[];
+
+        if (sentPosts.length === 0) {
+            console.log("No posts in feed table")
+            sentPosts = [];
+        }
+
+        else {
+            sentPosts = sentPosts.map(post => post.postId as string);
+            console.log("Posts in feed table: ", sentPosts);
+        }
 
         //* Get 1 or 2 posts for each following id
 
@@ -68,12 +107,21 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
             const posts = await Post.findMany({
                 where: {
                     userId: followingId,
+                    NOT: {
+                        id: {
+                            in: sentPosts,
+                        },
+                    },
                 },
                 take: 1,
             });
 
+            console.log('Following posts', posts);
+
             result.push(...posts);
         }
+
+        console.log('Result: ', result);
 
         let size = result.length / 2;
         // let size = result.length;
@@ -81,30 +129,32 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
         //* send these posts to the client
         const firstHalfPosts = result.slice(0, size);
 
+        //* send the first 20 and cache the rest
         res.status(200).json({ data: firstHalfPosts });
+
+
+
+        //********************** Caching ******************************
+
+
 
         //* cache these in the redis for next request
         const secondHalfPosts = result.slice(size);
-        await redisClient.set(`post:${userId}`, JSON.stringify(secondHalfPosts));
-        await redisClient.expire(`post:${userId}`, 60 * 60 * 5); // 5 hrs
+        redisClient.set(`post:${userId}`, JSON.stringify(secondHalfPosts));
+        redisClient.expire(`post:${userId}`, 60 * 60 * 5); // 5 hrs
 
         // If this is the first request, cache the count of posts
         const reqCount = await redisClient.get(`post:${userId}:count`);
 
-        //* if this is the first request, send the response
-        if (!reqCount) {
+        // //* if this is the first request, send the response
+        // if (!reqCount)
+        //     await redisClient.set(`post:${userId}:count`, 1);
 
-            await redisClient.set(`post:${userId}:count`, 1);
+        // else await redisClient.set(`post:${userId}`, JSON.stringify(result));
 
-            //* send the first 20 and cache the rest
-            // res.status(200).json({ data: firstHalfPosts })
-        }
+        // add these posts to feed table
+        addPostsToFeed(userId, firstHalfPosts);
 
-        else { // cache the response
-
-            await redisClient.set(`post:${userId}`, JSON.stringify(result));
-
-        }
     }
     catch (err) {
         catchHandler(err, AppError, next);
@@ -136,7 +186,7 @@ export const createFollow = asyncWrapper(async (req: Request, res: Response, nex
         try {
 
             //* Create a follow
-            const follow = await Follow.create({
+            await Follow.create({
                 data: {
                     userId,
                     following,
