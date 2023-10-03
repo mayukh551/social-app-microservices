@@ -41,6 +41,15 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
     const { id: userId } = req.params;
 
+    /**
+     * condition to decide 
+     * - to cache the posts retrieved from the DB so that client can directly get them from the cache
+     * OR 
+     * - send them to the client via res object
+    */
+    var useRes = true;
+
+
     // check if userID is defined
     if (!userId) {
         throw new UserError(400, "User ID is required", null);
@@ -61,8 +70,10 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
             res.status(200).json({ data: nextPosts });
 
             // add these posts to feed table
-            addPostsToFeed(userId, nextPosts);
-            return;
+            await addPostsToFeed(userId, nextPosts);
+
+            // cache the next newly generated posts
+            useRes = false;
         }
 
 
@@ -77,6 +88,8 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
             },
             take: 40,
         });
+
+        console.log('Top 40 following: ', top40Followings);
 
         const result: any[] = [];
 
@@ -100,28 +113,46 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
         //* Get 1 or 2 posts for each following id
 
+        // const followingIds = top40Followings.map((following: any) => following.follwoing as string) as string[];
+
         for (const following of top40Followings) {
 
             const followingId = following.following as string;
+            console.log('Following ID: ', followingId);
 
             const posts = await Post.findMany({
                 where: {
-                    userId: followingId,
+                    userId: followingId, // Filter by following ids
                     NOT: {
                         id: {
-                            in: sentPosts,
+                            in: sentPosts, // Exclude posts that have been sent before
                         },
                     },
                 },
-                take: 1,
+                take: 1, // limit to 1 post per following id
             });
 
-            console.log('Following posts', posts);
-
             result.push(...posts);
+
         }
 
         console.log('Result: ', result);
+
+
+        /**
+         * Cache the fresh result in the Redis
+         * So that when the client requests for next 40 or 20 posts,
+         * we can then send them from the cache directly
+         * instead of querying the DB again
+         */
+        if (!useRes) {
+            // cache the result
+            await redisClient.set(`post:${userId}`, JSON.stringify(result));
+            console.log('Cached again for next request');
+            return;
+        }
+
+        //* Prepare the res object
 
         let size = result.length / 2;
         // let size = result.length;
@@ -143,8 +174,11 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
         redisClient.set(`post:${userId}`, JSON.stringify(secondHalfPosts));
         redisClient.expire(`post:${userId}`, 60 * 60 * 5); // 5 hrs
 
+        // add these posts to feed table
+        addPostsToFeed(userId, firstHalfPosts);
+
         // If this is the first request, cache the count of posts
-        const reqCount = await redisClient.get(`post:${userId}:count`);
+        // const reqCount = await redisClient.get(`post:${userId}:count`);
 
         // //* if this is the first request, send the response
         // if (!reqCount)
@@ -152,8 +186,6 @@ export const getFeedPosts = asyncWrapper(async (req: Request, res: Response, nex
 
         // else await redisClient.set(`post:${userId}`, JSON.stringify(result));
 
-        // add these posts to feed table
-        addPostsToFeed(userId, firstHalfPosts);
 
     }
     catch (err) {
