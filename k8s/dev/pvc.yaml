@@ -1,0 +1,12 @@
+# create yaml file for PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi # Claim only 100MB of storage
+  storageClassName: local-storage # Match the storage class of the PV

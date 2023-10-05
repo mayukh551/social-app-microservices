@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-depl
+  namespace: social-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feed
+  template:
+    metadata:
+      labels:
+        app: feed
+    spec:
+      containers:
+        - name: feed
+          image: mayukh551/feed:latest
+          imagePullPolicy: IfNotPresent
+
+        - name: redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed-srv
+  namespace: social-app-dev
+spec:
+  selector:
+    app: feed
+  ports:
+    - name: feed
+      protocol: TCP
+      port: 5003
+      targetPort: 5003

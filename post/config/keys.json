@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pro-tuner-391513",
+  "private_key_id": "4c2a3693adaa52c90c38d45bfbc068401d03a1bd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCwoJK57+yY3zDE\nYt1GjxivGO8pVKI8ahKTeowaaNfYmF2Y66h1KSwbb1/S8iPCdsvef2wL4DidL6VB\ngW42jRS8dgjstkgR3ajl8PhvUnhLOSsY8ypC/bAGl/OniZOQ04QhX5kKEqQz9cux\nKonWKwrnYYd2AYDeQqlwloFWtlnUgpvpy/xSpo1J4wisVmhPt0+4nSKhDyxNvHF2\nDoTspi/JbZaIBdb1+b/PzGEyvwTkuLXGe/FqNjx25IwxPgyi1kq4XcCs1Gou/iBU\nVMcTB4/YPPHQePKCsVWRteO4PSKE7JVO51CSAgXIuN/Wt4eV2quQ+f4eg4heQzDv\nUCEnHnZhAgMBAAECggEAFnA1E6VU3lAu/Ck/HnFGsSqEFNu+nIQxMJvMjqervBq8\ne+p8L8jM5KivzgxFhLUzeGRMT+8/4fV6k1QjseRsXPYgc3SYupmj6kpEQAgvELIG\nNUOMUTm0kgczGfaSpj8TYGtU9YBMF0RuMxH0tB4rDXKeEzIPsqyvT9v0OcAtW0oM\njJQ/bGk0kYcp9eIbMYjXYw4NM5MpGuCATbarP1QWpq3bjIj5JjfhTqd3jmiCk9SZ\nAvnLNgFyaKKUt1gCvvT9G1qBwusRzlb7dARdIHn4HikEwejjmNuGU2QZhEqH9MlC\nZDgLaUAwzuTu7h3QZ/UFqcKN8MpN2p57E5AtkKonnQKBgQDzHLbi+LzMKdsP/T49\nJ+M5OJ/4eORNV3hgl5cw6vvl/6MJlO1XSwWiXS2oFJ6VNDj6Pi4h4BZPVqhnnFfF\ntzSbx6/GEdafyGJPP/Y2xmTjsoVpQvAcqidzjUNB74rnmNCQhEUF9QjMEb1mX2/5\n2Sen8nzKBn5rQ0vcugs42GY8iwKBgQC5/ZbGVMJA9DZ6gxTQjSnbhyZpJrDPYbZn\nKaBD/JoVotPmu5bXxrfnarRCzVayfBk2XU2mtkTvOXrGz9o18CjkUaQNz18D03bP\n+P+wxkMw5Nq2RHzJc6uTzntQ6glAHoeu+pZ+2G62fRybJN8oS5gKAD3PSlOvvwyY\nemoMJPOaQwKBgHaZ947bEh/3+2rdfNOQ9gUgXsp1D8u7dHqK+bNfr+wQvpUaFn+T\nlfgTxQZOqN7ZT0KluxPDop6qBBYn65oFOqEU1eenJDFnLK7E4XTvbKC4ouUrRsB1\nMjHpJHqyRe2eW4FlRdcWJ2iG7wNWY+ZbzkDcx4w3hs0FU6knCfp9d8LpAoGAeFN+\nWvt03Q7hu+rX6YCaJuNNz1NvqgseNamxfKqMiRjZnHmaQijWy4m1603rG/e7W/eL\nCCL9gAMg0kSgeKrR2byTtTeG0fPZ9vyxdw0dZSF5+ddfH/mMdEhucU+oAmp9/48x\nFAkzvy479ocpNGmLiFTVqCj+8UFZhcAUoZy6WP8CgYAeBuK/LciypRKcpICJc5HD\nWFaU/Dee9vyt+d+dU6OtCEnqzKFcwu1oAPfofs3R0KFGvFtiNncP8zZ8FR7fa56r\nQTRU7e/PCesxp8st2//qrbn5prNf2c57+jdjeE2XPhDAQTJoV4T0kKkPkBTOFpsE\nohfQN1C692CzONabrn34YA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-storage@pro-tuner-391513.iam.gserviceaccount.com",
+  "client_id": "110188390501371660754",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-storage%40pro-tuner-391513.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

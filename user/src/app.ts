@@ -2,8 +2,14 @@ import express, { Request, Response, NextFunction } from 'express';
 
 // import routes
 import userRouter from './Routes/user';
+import errorHandler from './Middlewares/error-handler';
+import cookieParser from 'cookie-parser';
 
 const app = express();
+
+app.set('trust proxy', true);
+
+app.use(cookieParser());
 
 app.use(express.json());
 
@@ -15,6 +21,6 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 app.use('/api/user', userRouter);
 
 // middlewares
-
+app.use(errorHandler);
 
 export default app;

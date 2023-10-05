@@ -7,11 +7,13 @@ CREATE TABLE "User" (
     "username" VARCHAR(50) NOT NULL,
     "firstName" VARCHAR(50) NOT NULL,
     "lastName" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(150) NOT NULL DEFAULT '',
+    "profilePic" TEXT DEFAULT '',
     "gender" "GENDER",
     "email" TEXT NOT NULL,
     "phoneNo" INTEGER,
-    "followers" BIGINT DEFAULT 0,
-    "following" BIGINT DEFAULT 0,
+    "followers" INTEGER DEFAULT 0,
+    "following" INTEGER DEFAULT 0,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -40,4 +42,3 @@ CREATE UNIQUE INDEX "Post_id_key" ON "Post"("id");
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
