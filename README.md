@@ -26,6 +26,9 @@ This is a microservices architecture based backend app for a social media which 
 #### Containerization tool and Ochestration Platform used:
 ![My Skills](https://skillicons.dev/icons?i=docker,kubernetes&theme=dark)
 
+### Skaffold
+Used for automating the image build and deploy process of k8s objects for all services with the help of `skaffold dev` command
+
 And
 
 API Gateway used:
