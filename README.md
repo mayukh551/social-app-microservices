@@ -17,8 +17,6 @@ This is a microservices architecture based backend app for a social media which 
 
 ## Backend Tech Stack
 
-![My Skills](https://skillicons.dev/icons?i=nodejs,typescript,postgresql,redis,prisma,docker,kubernetes&theme=dark)
-
 #### Programming languages Used:
 ![My Skills](https://skillicons.dev/icons?i=nodejs,typescript&theme=dark)
 
